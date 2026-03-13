@@ -1,0 +1,57 @@
+name: 'OnMint Upload'
+description: 'Upload project artifacts to the OnMint platform as data attachments'
+author: 'on:mint GmbH'
+
+inputs:
+  api_key:
+    description: 'OnMint API key'
+    required: true
+  api_secret:
+    description: 'OnMint API secret'
+    required: true
+  stream_id:
+    description: 'Stream ID to attach the artifact to'
+    required: true
+  api_url:
+    description: 'OnMint API base URL'
+    required: false
+    default: 'https://api.dev-onmint.com/v1'
+  path:
+    description: 'Path to file or directory to upload (default: entire repo)'
+    required: false
+    default: '.'
+  name:
+    description: 'Attachment name (default: {repo}-{tag/sha})'
+    required: false
+    default: ''
+  description:
+    description: 'Attachment description'
+    required: false
+    default: ''
+
+outputs:
+  attachment_id:
+    description: 'The created attachment ID'
+    value: ${{ steps.upload.outputs.attachment_id }}
+  status:
+    description: 'Final attachment status'
+    value: ${{ steps.upload.outputs.status }}
+  cid:
+    description: 'IPFS CID (if available)'
+    value: ${{ steps.upload.outputs.cid }}
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Upload artifact to OnMint
+      id: upload
+      shell: bash
+      env:
+        ONMINT_API_KEY: ${{ inputs.api_key }}
+        ONMINT_API_SECRET: ${{ inputs.api_secret }}
+        ONMINT_STREAM_ID: ${{ inputs.stream_id }}
+        ONMINT_API_URL: ${{ inputs.api_url }}
+        ONMINT_PATH: ${{ inputs.path }}
+        ONMINT_NAME: ${{ inputs.name }}
+        ONMINT_DESCRIPTION: ${{ inputs.description }}
+      run: ${{ github.action_path }}/upload.sh

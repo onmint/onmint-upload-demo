@@ -1,0 +1,38 @@
+name: Upload to OnMint
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build-and-upload:
+    name: Build & Upload to OnMint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build project
+        run: |
+          mkdir -p dist
+          sed "s/__BUILD_TIME__/$(date -u +%Y-%m-%dT%H:%M:%SZ)/" src/index.html > dist/index.html
+          echo "Build complete:"
+          cat dist/index.html
+
+      - name: Upload to OnMint
+        id: onmint
+        uses: ./.github/actions/onmint-upload
+        with:
+          api_key: ${{ secrets.ONMINT_API_KEY }}
+          api_secret: ${{ secrets.ONMINT_API_SECRET }}
+          stream_id: ${{ vars.ONMINT_STREAM_ID }}
+          path: ./dist
+          name: demo-build-${{ github.sha }}
+          description: "Automated upload from commit ${{ github.sha }}"
+
+      - name: Print results
+        run: |
+          echo "Attachment ID: ${{ steps.onmint.outputs.attachment_id }}"
+          echo "IPFS CID: ${{ steps.onmint.outputs.cid }}"
+          echo "Status: ${{ steps.onmint.outputs.status }}"
