@@ -92,10 +92,19 @@ log "Uploading file"
 GET_RESPONSE=$(api_call GET "/attachments/${ATTACHMENT_ID}")
 echo "Attachment details retrieved"
 
-PRESIGNED_URL=$(echo "$GET_RESPONSE" | python3 -c "import sys,json; print(json.load(sys.stdin).get('presigned_url',''))" 2>/dev/null || true)
+# The API returns presigned_urls as an array of {part, link} objects
+PRESIGNED_URL=$(echo "$GET_RESPONSE" | python3 -c "
+import sys, json
+data = json.load(sys.stdin)
+urls = data.get('presigned_urls') or []
+if urls:
+    print(urls[0].get('link', ''))
+else:
+    print('')
+" 2>/dev/null || true)
 
 if [ -n "$PRESIGNED_URL" ] && [ "$PRESIGNED_URL" != "None" ] && [ "$PRESIGNED_URL" != "" ]; then
-  echo "Uploading via single presigned URL..."
+  echo "Uploading via presigned URL..."
   HTTP_CODE=$(curl -sf -o /dev/null -w "%{http_code}" -X PUT \
     -H "Content-Type: application/zip" \
     --data-binary "@${ZIP_FILE}" \
@@ -103,7 +112,7 @@ if [ -n "$PRESIGNED_URL" ] && [ "$PRESIGNED_URL" != "None" ] && [ "$PRESIGNED_UR
   [ "$HTTP_CODE" -ge 200 ] && [ "$HTTP_CODE" -lt 300 ] || fail "Upload failed with HTTP ${HTTP_CODE}"
   echo "Upload complete (HTTP ${HTTP_CODE})"
 else
-  fail "No presigned URL in response — file may be too large for single-part upload"
+  fail "No presigned URL in response"
 fi
 
 endlog
