@@ -88,11 +88,9 @@ endlog
 
 log "Uploading file"
 
-# Presigned URLs come from GET, not the POST response
 GET_RESPONSE=$(api_call GET "/attachments/${ATTACHMENT_ID}")
 echo "Attachment details retrieved"
 
-# The API returns presigned_urls as an array of {part, link} objects
 PRESIGNED_URL=$(echo "$GET_RESPONSE" | python3 -c "
 import sys, json
 data = json.load(sys.stdin)
@@ -135,8 +133,7 @@ while [ "$ELAPSED" -lt "$POLL_TIMEOUT" ]; do
       break
       ;;
     ERROR)
-      ERROR_MSG=$(echo "$STATUS_RESPONSE" | python3 -c "import sys,json; print(json.load(sys.stdin).get('error_message','unknown'))" 2>/dev/null || true)
-      fail "Attachment processing failed: ${ERROR_MSG}"
+      fail "Attachment processing failed with ERROR status"
       ;;
   esac
 
@@ -146,7 +143,6 @@ done
 
 [ -z "$FINAL_STATUS" ] && fail "Polling timed out after ${POLL_TIMEOUT}s (last status: ${CURRENT_STATUS})"
 
-# Extract CID if available
 CID=$(echo "$STATUS_RESPONSE" | python3 -c "
 import sys, json
 data = json.load(sys.stdin)
@@ -157,13 +153,7 @@ else:
     print('')
 " 2>/dev/null || true)
 
-echo ""
-echo "====================================="
-echo "  Upload Complete!"
-echo "  Attachment ID: ${ATTACHMENT_ID}"
-echo "  CID: ${CID}"
-echo "  Status: ${FINAL_STATUS}"
-echo "====================================="
+echo "Attachment completed! ID: ${ATTACHMENT_ID}, CID: ${CID}"
 endlog
 
 # ---------- Outputs ----------

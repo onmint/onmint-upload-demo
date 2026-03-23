@@ -1,0 +1,25 @@
+name: Upload to OnMint
+
+# Vault: f86001ea-0a13-4614-9144-b121bc24c2f7
+# Stream: e09d0de2-2324-465f-a5bd-95da71036251
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Upload to OnMint
+        uses: ./.github/actions/onmint-upload
+        with:
+          api_key: ${{ secrets.ONMINT_API_KEY }}
+          api_secret: ${{ secrets.ONMINT_API_SECRET }}
+          stream_id: e09d0de2-2324-465f-a5bd-95da71036251
+          api_url: https://api.dev-onmint.com
+          path: ./dist
+          name: ${{ github.repository }}-${{ github.ref_name }}

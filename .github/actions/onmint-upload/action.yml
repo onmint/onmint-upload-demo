@@ -15,7 +15,7 @@ inputs:
   api_url:
     description: 'OnMint API base URL'
     required: false
-    default: 'https://api.dev-onmint.com/v1'
+    default: 'https://api.app.onmint.io/v1'
   path:
     description: 'Path to file or directory to upload (default: entire repo)'
     required: false
