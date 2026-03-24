@@ -6,19 +6,12 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-and-upload:
-    name: Build & Upload to OnMint
+  upload:
+    name: Upload to OnMint
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
-      - name: Build project
-        run: |
-          mkdir -p dist
-          sed "s/__BUILD_TIME__/$(date -u +%Y-%m-%dT%H:%M:%SZ)/" src/index.html > dist/index.html
-          echo "Build complete:"
-          cat dist/index.html
 
       - name: Upload to OnMint
         id: onmint
@@ -27,7 +20,7 @@ jobs:
           api_key: ${{ secrets.ONMINT_API_KEY }}
           api_secret: ${{ secrets.ONMINT_API_SECRET }}
           stream_id: ${{ vars.ONMINT_STREAM_ID }}
-          path: ./dist
+          path: .
           name: demo-build-${{ github.sha }}
           description: "Automated upload from commit ${{ github.sha }}"
 

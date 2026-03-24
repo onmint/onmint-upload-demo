@@ -1,16 +1,15 @@
 # OnMint Upload Demo
 
-This repository demonstrates how to automatically upload build artifacts to the [OnMint](https://onmint.io) platform from a CI/CD pipeline using API keys.
+This repository demonstrates how to automatically upload a repository to the [OnMint](https://onmint.io) platform from a CI/CD pipeline using API keys.
 
 ## How it works
 
 On every push to `main`, the GitHub Action:
 
-1. Builds the project (a simple HTML page in this demo)
-2. Zips the build output
-3. Creates a data attachment on the OnMint platform
-4. Uploads the zip via a presigned URL
-5. Polls until the attachment is processed and stored on IPFS
+1. Zips the entire repository (excluding `.git/`, `.github/`, `node_modules/`, etc.)
+2. Creates a data attachment on the OnMint platform
+3. Uploads the zip via a presigned URL
+4. Polls until the attachment is processed and stored on IPFS
 
 ## Setup
 
