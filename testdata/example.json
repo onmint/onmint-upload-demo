@@ -1,0 +1,38 @@
+{
+  "company": "Acme Corp",
+  "departments": [
+    {
+      "name": "Engineering",
+      "headcount": 42,
+      "budget": 850000,
+      "lead": "Dana Rivera",
+      "teams": [
+        { "name": "Backend", "members": 15, "stack": ["Go", "PostgreSQL", "Redis"] },
+        { "name": "Frontend", "members": 12, "stack": ["TypeScript", "React", "Tailwind"] },
+        { "name": "Platform", "members": 8, "stack": ["Terraform", "Kubernetes", "AWS"] },
+        { "name": "QA", "members": 7, "stack": ["Playwright", "Jest", "Cypress"] }
+      ]
+    },
+    {
+      "name": "Marketing",
+      "headcount": 18,
+      "budget": 320000,
+      "lead": "Marco Chen",
+      "teams": [
+        { "name": "Content", "members": 8 },
+        { "name": "Growth", "members": 6 },
+        { "name": "Design", "members": 4 }
+      ]
+    }
+  ],
+  "locations": [
+    { "city": "San Francisco", "country": "US", "timezone": "America/Los_Angeles" },
+    { "city": "London", "country": "UK", "timezone": "Europe/London" },
+    { "city": "Tokyo", "country": "JP", "timezone": "Asia/Tokyo" }
+  ],
+  "metadata": {
+    "version": "1.2.0",
+    "generatedAt": "2026-01-15T08:30:00Z",
+    "source": "internal-api"
+  }
+}
