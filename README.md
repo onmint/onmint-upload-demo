@@ -1,4 +1,4 @@
-# OnMint Upload Demo: 13.04.2026
+# OnMint Upload Demo: 14.04.2026
 
 This repository demonstrates how to automatically upload a repository to the [OnMint](https://onmint.io) platform from a CI/CD pipeline using API keys.
 
